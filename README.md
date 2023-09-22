@@ -12,7 +12,7 @@
   * [Performences for different models](#performences-for-different-models)
 - [Finally using Yolov5L+DIOU-NMS+TTA model train the NEW Mandai bird park dataset.](#finally-using-yolov5l-diou-nms-tta-model-train-the-new-mandai-bird-park-dataset)
 
-<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 
 ## Abstract
 
