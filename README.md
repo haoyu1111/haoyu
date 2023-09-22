@@ -1,7 +1,7 @@
-﻿@[toc]
+
 ## Abstract
 
-` 提示：这里可以添加技术概要`
+
 
 
 This project implements a bird classification task based on the Yolov5 deep
@@ -14,7 +14,7 @@ performance of the different models.
 
 ### Print CUB-200 dataset Classes
 
-` 提示：这里可以添加技术整体架构`
+
 Run: myTools/printCUBClasses.py
 
 ```python
@@ -36,7 +36,7 @@ print('done!')
 #### Yolo format
 Labels for this format should be exported to YOLO format with one file per image. If there are no objects in an image, no file is required. The file should be formatted with one row per object in format. Box coordinates must be in normalized xywh format (from 0 to 1). If your boxes are in pixels, you should divide and by image width, and and by image height. Class numbers should be zero-indexed (start with 0).
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/473107e4d3634671af3bbd3ec577b3e7.png)
-Run: myTools/printCUBClasses.py
+Run:[README1](myTools/printCUBClasses.py)
  Here is the code for changing the format of CUB-200 dataset to Yolo format:
 ```python
 import os
