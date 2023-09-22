@@ -3,16 +3,14 @@
   * [Print CUB-200 dataset Classes](#print-cub-200-dataset-classes)
   * [Convert image format to yolo format](#convert-image-format-to-yolo-format)
     + [Yolo format](#yolo-format)
-- [Comparing the performence of different Yolo models](#comparing-the-performence-of-different-yolo-models)
-  * [Yolov5s (Baseline)](#yolov5s--baseline-)
-  * [Yolov5l](#yolov5l)
-  * [Yolov8](#yolov8)
-  * [Using TTA trick](#using-tta-trick)
-  * [Apply DIOU-NMS](#apply-diou-nms)
+  * [Comparing the performence of different Yolo models](#comparing-the-performence-of-different-yolo-models)
+    + [Yolov5s (Baseline)](#yolov5s--baseline-)
+    + [Yolov5l](#yolov5l)
+    + [Yolov8](#yolov8)
+    + [Using TTA trick](#using-tta-trick)
+    + [Apply DIOU-NMS](#apply-diou-nms)
   * [Performences for different models](#performences-for-different-models)
-- [Finally using Yolov5L+DIOU-NMS+TTA model train the NEW Mandai bird park dataset.](#finally-using-yolov5l-diou-nms-tta-model-train-the-new-mandai-bird-park-dataset)
-
-
+  * [Finally using Yolov5L+DIOU-NMS+TTA model train the NEW Mandai bird park dataset.](#finally-using-yolov5l-diou-nms-tta-model-train-the-new-mandai-bird-park-dataset)
 
 ## Abstract
 
@@ -135,8 +133,8 @@ names:
   199: 200.Common_Yellowthroat
 ```
 
-## Comparing the performence of different Yolo models 
-### Yolov5s (Baseline)
+### Comparing the performence of different Yolo models 
+#### Yolov5s (Baseline)
 For using Yolov5s model to train, just need modify the Environment variables of "train.py". For example:
 Environment variables:
 data represents the dataset used for training.
@@ -159,13 +157,13 @@ yolov5s.pt
 --workers
 0
 ```
-### Yolov5l
+#### Yolov5l
 
 Just need to change the cfg to "yolov5l.yaml" and change the weights to the "yolov5l.pt".
-### Yolov8
+#### Yolov8
 
 Also try the nest version of Yolo model. But the performence is mediocre.
-### Using TTA trick
+#### Using TTA trick
 A simple introduction to Test Time Augmentation (TTA) is to use data augmentation during testing as well.
 
 Implementation in yolov5:
@@ -174,7 +172,7 @@ Append --augment to any existing val.py command to enable TTA, and increase the 
 `
 Note: The weights here are the best performing weights in a training session.
 
-### Apply DIOU-NMS
+#### Apply DIOU-NMS
 DIOU-NMS considers not only the IOU, but also the distance between the centre points of the two frames. If the IOU between two frames is relatively large, but when the distance between two frames is relatively large, it may be considered as a frame of two objects and not be filtered out. 
  
  In the YOLOV5 source code, the author is directly calling the official Pytorch NMS API. 
@@ -248,5 +246,5 @@ Replace with DIOU-NMS function：
 By comparing the above tricks I used, yolov5L with TTA as well as DIOU tricks  performs best.
 
 
-## Finally using Yolov5L+DIOU-NMS+TTA model train the NEW Mandai bird park dataset.
+### Finally using Yolov5L+DIOU-NMS+TTA model train the NEW Mandai bird park dataset.
 Every bird in the New Mandai Bird Park dataset was detected correctly and with a high degree of confidence. And The goal to detecting species of birds in the New Mandai bird park was finally achieved. 
