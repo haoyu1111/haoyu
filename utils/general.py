@@ -1009,6 +1009,7 @@ def apply_classifier(x, model, img, im0):
     return x
 
 
+
 def increment_path(path, exist_ok=False, sep='', mkdir=False):
     # Increment file or directory path, i.e. runs/exp --> runs/exp{sep}2, runs/exp{sep}3, ... etc.
     path = Path(path)  # os-agnostic
@@ -1035,6 +1036,58 @@ def increment_path(path, exist_ok=False, sep='', mkdir=False):
     return path
 
 
+def diou_box_nms(self, scores, boxes, iou_thres):
+    if boxes.shape[0] == 0:
+        return torch.zeros(0, device=boxes.device).long()
+    x1, y1, x2, y2 = boxes[:, 0], boxes[:, 1], boxes[:, 2], boxes[:, 3]
+    areas = (x2 - x1 + 1) * (y2 - y1 + 1)
+    order = torch.sort(scores, descending=True)[1]  # (?,)
+    keep = []
+    while order.numel() > 0:
+        if order.numel() == 1:
+            keep.append(order.item())
+            break
+        else:
+            i = order[0].item()
+            keep.append(i)
+
+            xmin = torch.clamp(x1[order[1:]], min=float(x1[i]))
+            ymin = torch.clamp(y1[order[1:]], min=float(y1[i]))
+            xmax = torch.clamp(x2[order[1:]], max=float(x2[i]))
+            ymax = torch.clamp(y2[order[1:]], max=float(y2[i]))
+
+            inter_area = torch.clamp(xmax - xmin, min=0.0) * torch.clamp(ymax - ymin, min=0.0)
+
+            iou = inter_area / (areas[i] + areas[order[1:]] - inter_area + 1e-16)
+
+            # diou add center
+            # inter_diag
+            cxpreds = (x2[i] + x1[i]) / 2
+            cypreds = (y2[i] + y1[i]) / 2
+
+            cxbbox = (x2[order[1:]] + x1[order[1:]]) / 2
+            cybbox = (y1[order[1:]] + y2[order[1:]]) / 2
+
+            inter_diag = (cxbbox - cxpreds) ** 2 + (cybbox - cypreds) ** 2
+
+            # outer_diag
+            ox1 = torch.min(x1[order[1:]], x1[i])
+            oy1 = torch.min(y1[order[1:]], y1[i])
+            ox2 = torch.max(x2[order[1:]], x2[i])
+            oy2 = torch.max(y2[order[1:]], y2[i])
+
+            outer_diag = (ox1 - ox2) ** 2 + (oy1 - oy2) ** 2
+
+            diou = iou - inter_diag / outer_diag
+            diou = torch.clamp(diou, min=-1.0, max=1.0)
+
+            # mask_ind = (iou <= iou_thres).nonzero().squeeze()
+            mask_ind = (diou <= iou_thres).nonzero().squeeze()
+
+            if mask_ind.numel() == 0:
+                break
+            order = order[mask_ind + 1]
+    return torch.LongTensor(keep)
 # OpenCV Chinese-friendly functions ------------------------------------------------------------------------------------
 imshow_ = cv2.imshow  # copy to avoid recursion errors
 
